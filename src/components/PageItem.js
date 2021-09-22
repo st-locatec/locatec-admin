@@ -25,26 +25,17 @@ function PageItem({ page }) {
             <Button
                variant="contained"
                color="primary"
-               onClick={() => history.goBack()}
+               onClick={() => history.push("/main")}
                className={classes.button}>
                뒤로가기
             </Button>
          </div>
-         <MapWrap coords={page.coords} />
+         <MapWrap coords={page?.coords} />
          <img
-            src={page.image}
+            src={page?.image}
             alt="error"
             style={{ width: 400, height: 300 }}
          />
-         <div>
-            <Button
-               variant="contained"
-               color="primary"
-               onClick={() => history.goback()}
-               className={classes.button}>
-               뒤로가기
-            </Button>
-         </div>
       </>
    );
 }

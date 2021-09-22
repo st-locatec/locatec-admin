@@ -11,13 +11,13 @@ const MapWrap = withScriptjs(
          <GoogleMap
             defaultZoom={18}
             defaultCenter={{
-               lat: coords.latitude,
-               lng: coords.longitude,
+               lat: coords?.latitude,
+               lng: coords?.longitude,
             }}>
             <Marker
                position={{
-                  lat: coords.latitude,
-                  lng: coords.longitude,
+                  lat: coords?.latitude,
+                  lng: coords?.longitude,
                }}
             />
          </GoogleMap>
