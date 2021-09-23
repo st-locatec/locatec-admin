@@ -1,3 +1,7 @@
+/**
+ * 로그인 처리 element
+ */
+
 import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -13,10 +17,13 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { logined } from "../../stores/loginState";
 
+// styled-component로 ErrorMessage 스타일 적용
 const ErrorMessege = styled.div`
    padding-left: 10px;
    color: red;
 `;
+
+// 스타일
 const useStyles = makeStyles((theme) => ({
    paper: {
       margin: theme.spacing(8, 4),
@@ -36,14 +43,16 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(3, 0, 2),
    },
 }));
-function Auth({ onLogined }) {
-   const history = useHistory();
-   const [email, setEmail] = useState("");
-   const [pw, setPw] = useState("");
-   const [errMsg, setErrMsg] = useState("");
-   const [rememberMe, setRememberMe] = useState(false);
-   const classes = useStyles();
 
+function Auth({ onLogined }) {
+   const history = useHistory(); // 브라우저 history 객체 가져오기
+   const [email, setEmail] = useState(""); // 유저가 입력한 이메일 상태
+   const [pw, setPw] = useState(""); // 유저가 입력한 비밀번호 상태
+   const [errMsg, setErrMsg] = useState(""); // 에러메세지 상태
+   const [rememberMe, setRememberMe] = useState(false); // 자동로그인 체크여부 상태
+   const classes = useStyles(); // 위에서 선언한 스타일 가져오리
+
+   // 인증 에러 핸들링
    const errorHandle = (err) => {
       if (err.code === "auth/user-not-found") {
          setErrMsg("가입되지 않은 이메일입니다.");
@@ -61,6 +70,8 @@ function Auth({ onLogined }) {
          setErrMsg(err.message);
       }
    };
+
+   // 파이어베이스 auth 를 사용하여 로그인
    const login = () => {
       fbAuth
          .signInWithEmailAndPassword(email, pw)
@@ -75,6 +86,7 @@ function Auth({ onLogined }) {
          });
    };
 
+   // 자동로그인을 누르고 로그인했는지 확인하여 적절히 로그인하기
    const onLoginCheckIsRememberMe = () => {
       if (rememberMe) {
          fbAuth.setPersistence("local").then(() => {
@@ -85,10 +97,13 @@ function Auth({ onLogined }) {
       }
    };
 
+   // 로그인 버튼 클릭시 호출
    const onClick = (e) => {
       e.preventDefault();
       onLoginCheckIsRememberMe();
    };
+
+   // 입력 처리 콜백함수
    const onChangeEmail = (e) => {
       setEmail(e.target.value);
    };
@@ -156,10 +171,12 @@ function Auth({ onLogined }) {
    );
 }
 
+// 리덕스 action을 가져오기 위한 함수
 function mapDispatchToProps(dispatch) {
    return {
       onLogined: (uid) => dispatch(logined(uid)),
    };
 }
 
+// 현재 element를 리덕스와 연결시키서 export
 export default connect(null, mapDispatchToProps)(Auth);

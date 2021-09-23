@@ -1,3 +1,6 @@
+/**
+ * 홈 화면
+ */
 import React, { useEffect, useState } from "react";
 import Container from "@material-ui/core/Container";
 import { CircularProgress, makeStyles, Modal, Paper } from "@material-ui/core";
@@ -5,8 +8,9 @@ import clsx from "clsx";
 import { Route } from "react-router";
 import PageList from "../components/PageList";
 import PageItem from "../components/PageItem";
-import { SMOKE, TRASHCAN } from "../types";
+import { SMOKE, TRASHCAN } from "../constants/types";
 
+// 스타일들
 const useStyles = makeStyles((theme) => ({
    paper: {
       padding: theme.spacing(2),
@@ -73,22 +77,24 @@ export const locate = [
    },
 ];
 
-function Home({ uid }) {
+function Home() {
    const classes = useStyles();
-   const [loading, setLoading] = useState(false);
-   const [page, setPage] = useState(null);
-   const [list, setList] = useState([]);
-   const [refresh, setRefresh] = useState(1);
+   const [loading, setLoading] = useState(true); // 로딩 상태 관리
+   const [page, setPage] = useState(null); // 요청 리스트 중 하나를 선택할지 여기에 그 데이터가 들어감
+   const [list, setList] = useState([]); // 요청리스트
+
+   // 가운데 paper 사이즈 적용
    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
    useEffect(() => {
       setLoading(true);
+      // 요청리스트 받아오기
       const getList = async () => {
          setList(locate);
          setLoading(false);
       };
       getList();
-   }, [uid, refresh]);
+   }, []);
 
    return (
       <>
@@ -103,9 +109,7 @@ function Home({ uid }) {
                      <PageList
                         setLoading={setLoading}
                         list={list}
-                        uid={uid}
                         setPage={setPage}
-                        setRefresh={setRefresh}
                      />
                   </Route>
                </Paper>
@@ -117,4 +121,5 @@ function Home({ uid }) {
       </>
    );
 }
+
 export default Home;

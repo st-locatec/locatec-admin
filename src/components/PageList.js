@@ -1,3 +1,5 @@
+// 요청 리스트 렌더
+import React from "react";
 import {
    Divider,
    IconButton,
@@ -7,29 +9,35 @@ import {
    ListItemText,
    Typography,
 } from "@material-ui/core";
-
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
-import React from "react";
 import { useHistory } from "react-router";
 import mapLocTypeToStr from "../utils/mapLocTypeToStr";
 
-function PageList({ list, setLoading, uid, setPage, setRefresh }) {
-   const history = useHistory();
+function PageList({ list, setLoading, setPage }) {
+   const history = useHistory(); // 브라우저 history 객체 가져오기
+
+   // 요청 클릭시 그 요청의 데이터를 page 상태에 넣고, pageItem으로 이동
    const onClick = async (item) => {
       setLoading(true);
       setPage(item);
       history.push("/main/pageitem");
       setLoading(false);
    };
+
+   // 허가 눌렀을 시 호출
    const onApprove = async (item) => {
       setLoading(true);
+      // 한번 더 확인
       if (window.confirm("허가하시겠습니까?")) {
       }
       setLoading(false);
    };
+
+   // 거부 눌렀을 시 호출
    const onDecline = async (item) => {
       setLoading(true);
+      // 한번 더 확인
       if (window.confirm("거부하시겠습니까?")) {
       }
       setLoading(false);

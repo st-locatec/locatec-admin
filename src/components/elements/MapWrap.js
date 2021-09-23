@@ -1,3 +1,8 @@
+/**
+ * react-google-maps를 감싼 element
+ * 간단히 coords만 인자로 넘기면 그곳에 marker를 찍은 지도를 보여준다.
+ */
+
 import {
    withScriptjs,
    withGoogleMap,
@@ -5,6 +10,7 @@ import {
    Marker,
 } from "react-google-maps";
 
+// 지도를 한번 감싸기
 const MapWrap = withScriptjs(
    withGoogleMap(({ coords }) => {
       return (
@@ -25,6 +31,7 @@ const MapWrap = withScriptjs(
    })
 );
 
+// api kay, 기타 기초 스타일 적용
 export default function MapWrapWithScript({ coords }) {
    return (
       <MapWrap

@@ -1,3 +1,7 @@
+/**
+ * 로그인 화면
+ */
+
 import React, { useEffect } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Paper from "@material-ui/core/Paper";
@@ -10,6 +14,7 @@ import { useHistory } from "react-router";
 import { connect } from "react-redux";
 import { logined } from "../stores/loginState";
 
+// 상태들
 const useStyles = makeStyles((theme) => ({
    root: {
       height: "100vh",
@@ -32,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.secondary.main,
    },
    form: {
-      width: "100%", // Fix IE 11 issue.
+      width: "100%",
       marginTop: theme.spacing(1),
    },
    submit: {
@@ -49,6 +54,9 @@ function Login({ onLogined, isLogined }) {
    const history = useHistory();
 
    useEffect(() => {
+      // 유저의 인증상태가 변하는 걸 트래킹하는 이벤트 등록.
+      // 인증된다면 main 화면으로 이동시킨다.
+      // 자동로그인을 하고 로그인한적이 있다면, 맨처음에 아래코드가 실행되면서 인증을 한다.
       if (!isLogined) {
          fbAuth.onAuthStateChanged((user) => {
             if (user) {
@@ -70,23 +78,24 @@ function Login({ onLogined, isLogined }) {
             md={3}
             component={Paper}
             elevation={6}
-            square
-         >
+            square>
             <Auth />
          </Grid>
       </Grid>
    );
 }
 
+// 리덕스 action을 가져오기 위한 함수
 function mapDispatchToProps(dispatch) {
    return {
       onLogined: (uid) => dispatch(logined(uid)),
    };
 }
+// 리덕스 상태를 가져오기 위한 함수
 function mapStateToProps(state) {
    return {
       isLogined: state.loginReducer.isLogined,
    };
 }
-
+// 현재 element를 리덕스와 연결시키서 export
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

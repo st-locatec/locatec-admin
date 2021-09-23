@@ -1,8 +1,11 @@
-import firebase from "firebase/app";
+/**
+ * 파이어베이스 초기화
+ */
 
-// Add the Firebase services that you want to use
+import firebase from "firebase/app";
 import "firebase/auth";
 
+// 키, id 등 가져오기
 var firebaseConfig = {
    apiKey: process.env.REACT_APP_API_KEY,
    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -11,7 +14,7 @@ var firebaseConfig = {
    appId: process.env.REACT_APP_APP_ID,
 };
 
-// Initialize Firebase
+// 가져온 키, id로 파이어베이스 초기화
 firebase.initializeApp(firebaseConfig);
 
 export const fb = firebase;

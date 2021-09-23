@@ -1,3 +1,6 @@
+/**
+ * 메인화면에서 좌측 drawer
+ */
 import React from "react";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -12,7 +15,9 @@ import IconButton from "@material-ui/core/IconButton";
 import Drawer from "@material-ui/core/Drawer";
 import { useHistory } from "react-router";
 
-export const drawerWidth = 240;
+export const drawerWidth = 240; // drawer 너비.
+
+// 스타일
 const useStyles = makeStyles((theme) => ({
    drawerPaper: {
       position: "relative",
@@ -43,22 +48,9 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
-const mainListItems = (history) => {
-   return (
-      <div>
-         <ListItem button onClick={() => history.push("/main")}>
-            <ListItemIcon>
-               <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary="홈" />
-         </ListItem>
-      </div>
-   );
-};
-
 export default function CustomDrawer({ open, handleDrawerClose }) {
-   const classes = useStyles();
-   const history = useHistory();
+   const classes = useStyles(); // 위에서 선언한 스타일
+   const history = useHistory(); // 브라우저 history 객체 가져오기
    return (
       <>
          <Drawer
@@ -76,7 +68,14 @@ export default function CustomDrawer({ open, handleDrawerClose }) {
                </IconButton>
             </div>
             <Divider />
-            <List>{mainListItems(history)}</List>
+            <List>
+               <ListItem button onClick={() => history.push("/main")}>
+                  <ListItemIcon>
+                     <DashboardIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="홈" />
+               </ListItem>
+            </List>
          </Drawer>
       </>
    );

@@ -10,12 +10,15 @@ const persistConfig = {
    storage,
 };
 
+// 리듀서 합치기
 const rootReducer = combineReducers({
    loginReducer,
 });
 
+// 새로고침을 해도 인증상태가 유지되도록 persistReducer에 연결
 const enhancedReducer = persistReducer(persistConfig, rootReducer);
 
+// 스토어와 persistGate에 연동을 위한 persistor를 리턴하는 함수 export
 export default function configureStore() {
    const store = createStore(enhancedReducer);
    const persistor = persistStore(store);
