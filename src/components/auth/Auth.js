@@ -16,6 +16,7 @@ import { fbAuth } from "../../firebase";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { logined } from "../../stores/loginState";
+import { REQUEST } from "../../constants/Link";
 
 // styled-component로 ErrorMessage 스타일 적용
 const ErrorMessege = styled.div`
@@ -79,7 +80,7 @@ function Auth({ onLogined }) {
             onLogined(user.user.uid);
             setEmail("");
             setPw("");
-            history.push("/main");
+            history.push(REQUEST);
          })
          .catch((error) => {
             errorHandle(error);

@@ -5,7 +5,8 @@
 import { Button, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import MapWrap from "./elements/MapWrap";
+import MapWrap from "../elements/MapWrap";
+import { REQUEST } from "../../constants/Link";
 
 // 스타일
 const useStyles = makeStyles(() => ({
@@ -22,7 +23,7 @@ const useStyles = makeStyles(() => ({
    },
 }));
 
-function PageItem({ page }) {
+function PageItem({ item }) {
    const classes = useStyles(); // 위에서 선언한 스타일
    const history = useHistory(); // 브라우저 history 객체 가져오기
 
@@ -32,14 +33,14 @@ function PageItem({ page }) {
             <Button
                variant="contained"
                color="primary"
-               onClick={() => history.push("/main")}
+               onClick={() => history.push(REQUEST)}
                className={classes.button}>
                뒤로가기
             </Button>
          </div>
-         <MapWrap coords={page?.coords} />
+         <MapWrap coords={item?.coords} />
          <img
-            src={page?.image}
+            src={item?.image}
             alt="error"
             style={{ width: 400, height: 300 }}
          />

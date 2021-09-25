@@ -61,7 +61,7 @@ function Login({ onLogined, isLogined }) {
          fbAuth.onAuthStateChanged((user) => {
             if (user) {
                onLogined(user.uid);
-               return history.push("/main");
+               return history.push("/main/request");
             }
          });
       }

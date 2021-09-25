@@ -6,9 +6,17 @@ import Container from "@material-ui/core/Container";
 import { CircularProgress, makeStyles, Modal, Paper } from "@material-ui/core";
 import clsx from "clsx";
 import { Route } from "react-router";
-import PageList from "../components/PageList";
-import PageItem from "../components/PageItem";
+import PageList from "../components/request/PageList";
+import PageItem from "../components/request/PageItem";
 import { SMOKE, TRASHCAN } from "../constants/types";
+import WholeList from "../components/wholeList/WholeList";
+import WholeListItem from "../components/wholeList/WholeListItem,";
+import {
+   REQUEST,
+   REQUEST_ITEM,
+   WHOLELIST,
+   WHOLELIST_ITEM,
+} from "../constants/Link";
 
 // 스타일들
 const useStyles = makeStyles((theme) => ({
@@ -80,8 +88,11 @@ export const locate = [
 function Home() {
    const classes = useStyles();
    const [loading, setLoading] = useState(true); // 로딩 상태 관리
-   const [page, setPage] = useState(null); // 요청 리스트 중 하나를 선택할지 여기에 그 데이터가 들어감
-   const [list, setList] = useState([]); // 요청리스트
+   const [requestItem, setRequestItem] = useState(null); // 요청 리스트 중 하나를 선택할지 여기에 그 데이터가 들어감
+   const [requestList, setRequestList] = useState([]); // 요청리스트
+   const [wholeListItem, setWholeListItem] = useState(null); // 전체 리스트 중 하나를 선택할지 여기에 그 데이터가 들어감
+   const [wholeList, setWholeList] = useState([]); // 전체 리스트
+   const [refresh, setRefresh] = useState(0);
 
    // 가운데 paper 사이즈 적용
    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -90,11 +101,14 @@ function Home() {
       setLoading(true);
       // 요청리스트 받아오기
       const getList = async () => {
-         setList(locate);
+         // 요청리스트 받아오기
+         setRequestList(locate);
+         // 전체 리스트 받아오기
+         setWholeList(locate);
          setLoading(false);
       };
       getList();
-   }, []);
+   }, [refresh]);
 
    return (
       <>
@@ -102,14 +116,31 @@ function Home() {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                <Paper className={fixedHeightPaper}>
-                  <Route exact path="/main/pageitem">
-                     <PageItem page={page} setPage={setPage} />
-                  </Route>
-                  <Route exact path="/main">
+                  <Route exact path={REQUEST}>
                      <PageList
                         setLoading={setLoading}
-                        list={list}
-                        setPage={setPage}
+                        list={requestList}
+                        setItem={setRequestItem}
+                        setRefresh={setRefresh}
+                     />
+                  </Route>
+                  <Route path={REQUEST_ITEM}>
+                     <PageItem item={requestItem} />
+                  </Route>
+                  <Route exact path={WHOLELIST}>
+                     <WholeList
+                        setLoading={setLoading}
+                        list={wholeList}
+                        setItem={setWholeListItem}
+                        setRefresh={setRefresh}
+                     />
+                  </Route>
+                  <Route path={WHOLELIST_ITEM}>
+                     <WholeListItem
+                        item={wholeListItem}
+                        setItem={setWholeListItem}
+                        setLoading={setLoading}
+                        setRefresh={setRefresh}
                      />
                   </Route>
                </Paper>

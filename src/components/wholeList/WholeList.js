@@ -1,6 +1,7 @@
 // 요청 리스트 렌더
 import React from "react";
 import {
+   Button,
    Divider,
    IconButton,
    List,
@@ -9,49 +10,73 @@ import {
    ListItemText,
    Typography,
 } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import RemoveIcon from "@material-ui/icons/Remove";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { useHistory } from "react-router";
-import mapLocTypeToStr from "../utils/mapLocTypeToStr";
+import mapLocTypeToStr from "../../utils/mapLocTypeToStr";
+import { WHOLELIST_ITEM } from "../../constants/Link";
 
-function PageList({ list, setLoading, setPage }) {
+function WholeList({ list, setLoading, setItem, setRefresh }) {
    const history = useHistory(); // 브라우저 history 객체 가져오기
 
    // 요청 클릭시 그 요청의 데이터를 page 상태에 넣고, pageItem으로 이동
    const onClick = async (item) => {
       setLoading(true);
-      setPage(item);
-      history.push("/main/pageitem");
+      setItem(item);
+      history.push(WHOLELIST_ITEM);
       setLoading(false);
    };
 
-   // 허가 눌렀을 시 호출
+   // 수정 눌렀을 시 호출
    const onApprove = async (item) => {
       setLoading(true);
       // 한번 더 확인
-      if (window.confirm("허가하시겠습니까?")) {
+      if (window.confirm("수정하시겠습니까?")) {
+         setItem(item);
+         history.push(WHOLELIST_ITEM);
       }
       setLoading(false);
    };
 
-   // 거부 눌렀을 시 호출
+   // 삭제 눌렀을 시 호출
    const onDecline = async (item) => {
       setLoading(true);
       // 한번 더 확인
-      if (window.confirm("거부하시겠습니까?")) {
+      if (window.confirm("삭제하시겠습니까?")) {
+         setRefresh((prev) => prev + 1);
       }
       setLoading(false);
    };
+
    return (
       <>
-         <Typography component="h2" variant="h6" color="primary" gutterBottom>
-            요청 리스트
-         </Typography>
+         <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography
+               component="h2"
+               variant="h6"
+               color="primary"
+               gutterBottom>
+               전체 리스트
+            </Typography>
+
+            <Button
+               variant="contained"
+               color="primary"
+               onClick={() => {
+                  history.push(WHOLELIST_ITEM);
+                  setItem();
+               }}
+               style={{
+                  maxWidth: "100px",
+               }}>
+               생성
+            </Button>
+         </div>
          <List component="nav" aria-label="main mailbox folders">
             {list.length === 0 ? (
                <>
                   <ListItem>
-                     <ListItemText primary="요청이 없습니다." />
+                     <ListItemText primary="아이템이 없습니다." />
                   </ListItem>
                   <Divider />
                </>
@@ -73,13 +98,13 @@ function PageList({ list, setLoading, setPage }) {
                                  edge="end"
                                  aria-label="approve"
                                  onClick={() => onApprove(item)}>
-                                 <AddIcon />
+                                 <EditIcon />
                               </IconButton>
                               <IconButton
                                  edge="end"
                                  aria-label="decline"
                                  onClick={() => onDecline(item)}>
-                                 <RemoveIcon />
+                                 <DeleteIcon />
                               </IconButton>
                            </ListItemSecondaryAction>
                         </ListItem>
@@ -92,4 +117,4 @@ function PageList({ list, setLoading, setPage }) {
       </>
    );
 }
-export default PageList;
+export default WholeList;
