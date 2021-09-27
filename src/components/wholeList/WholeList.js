@@ -86,7 +86,7 @@ function WholeList({ list, setLoading, setItem, setRefresh }) {
                      <>
                         <ListItem
                            id={idx}
-                           key={idx}
+                           key={`wholelist_${idx}`}
                            button
                            onClick={() => onClick(item)}>
                            <ListItemText
