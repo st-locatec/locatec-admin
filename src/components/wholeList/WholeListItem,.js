@@ -9,6 +9,8 @@ import { WHOLELIST } from "../../constants/Link";
 import MapWrap from "../elements/MapWrap";
 import { locationTypeArray, SMOKE } from "../../constants/types";
 import mapLocTypeToStr from "../../utils/mapLocTypeToStr";
+import { updateWholeListItemApi } from "../../api/wholeList";
+import { getBase64FromUrl } from "../../utils/getBase64Image";
 
 // 스타일
 const useStyles = makeStyles(() => ({
@@ -32,7 +34,6 @@ function WholeListItem({ item, setLoading, setRefresh }) {
    const classes = useStyles(); // 위에서 선언한 스타일
    const history = useHistory(); // 브라우저 history 객체 가져오기
    const [curItem, setCurItem] = useState();
-   const [photoFile, setPhotoFile] = useState();
    const [isEdit, setIsEdit] = useState(false);
    const [anchorEl, setAnchorEl] = useState();
    const photoAddBtnRef = useRef();
@@ -55,23 +56,39 @@ function WholeListItem({ item, setLoading, setRefresh }) {
       }
    }, [item]);
 
+   console.log(curItem);
    // 수정 또는 생성 요청 보내기
    const onPressComplete = async () => {
       setLoading(true);
       if (window.confirm(`${isEdit ? "수정" : "생성"}요청을 보내겠습니까?`)) {
-         if (isEdit) {
-            if (photoFile) {
-               const formData = new FormData();
-               formData.append("file", photoFile);
+         try {
+            if (isEdit) {
+               let obj = {
+                  productId: curItem.id,
+                  latitude: curItem.coords.latitude,
+                  longitude: curItem.coords.longitude,
+                  type: curItem.type,
+                  image: curItem.image,
+               };
+
+               // 사진 변경안됐으면 url 을 base64로 바꾸기
+               if (curItem.image && curItem.image.startsWith("https://")) {
+                  const res = await getBase64FromUrl(curItem.image);
+                  obj.image = res;
+               }
+               // base64에서 앞에 빼기
+
+               await updateWholeListItemApi({
+                  ...obj,
+                  image: obj.image.substring(obj.image.indexOf(",") + 1),
+               });
             } else {
-               // 사진 안바뀌었으면 링크를 formdata로 바꾸기
             }
-         } else {
-            const formData = new FormData();
-            formData.append("file", photoFile);
+            setRefresh((prev) => prev + 1);
+            history.push(WHOLELIST);
+         } catch (e) {
+            console.log(e.response);
          }
-         setRefresh((prev) => prev + 1);
-         history.push(WHOLELIST);
       }
       setLoading(false);
    };
@@ -104,12 +121,14 @@ function WholeListItem({ item, setLoading, setRefresh }) {
          // 2. 읽기가 완료되면 아래코드가 실행
          const base64 = reader.result;
          if (base64) {
-            setCurItem((prev) => ({ ...prev, image: base64.toString() }));
+            setCurItem((prev) => ({
+               ...prev,
+               image: base64,
+            }));
          }
       };
       if (e.target.files[0]) {
          reader.readAsDataURL(e.target.files[0]); // 1. 파일을 읽어 버퍼에 저장
-         setPhotoFile(e.target.files[0]); // 파일 상태 업데이트
       }
    };
 

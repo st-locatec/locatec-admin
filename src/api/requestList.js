@@ -14,15 +14,16 @@ export const getRequestListApi = async () => {
 // 요청 허가
 export const approveRequestApi = async (id) => {
    try {
-      await axios.post(`${ADDRESS}/product/register/permit`, { productId: id });
+      await axios.post(`${ADDRESS}/admin/register/permit`, { productId: id });
    } catch (e) {
       throw e;
    }
 };
 
 // 요청 거절
-export const declineRequestApi = async () => {
+export const declineRequestApi = async (id) => {
    try {
+      await axios.post(`${ADDRESS}/admin/register/reject`, { productId: id });
    } catch (e) {
       throw e;
    }

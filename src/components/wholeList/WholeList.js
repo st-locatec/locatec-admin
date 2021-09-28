@@ -21,21 +21,19 @@ function WholeList({ list, setLoading, setItem, setRefresh }) {
 
    // 요청 클릭시 그 요청의 데이터를 page 상태에 넣고, pageItem으로 이동
    const onClick = async (item) => {
-      setLoading(true);
-      setItem(item);
-      history.push(WHOLELIST_ITEM);
-      setLoading(false);
+      if (window.confirm("수정하시겠습니까?")) {
+         setItem(item);
+         history.push(WHOLELIST_ITEM);
+      }
    };
 
    // 수정 눌렀을 시 호출
    const onApprove = async (item) => {
-      setLoading(true);
       // 한번 더 확인
       if (window.confirm("수정하시겠습니까?")) {
          setItem(item);
          history.push(WHOLELIST_ITEM);
       }
-      setLoading(false);
    };
 
    // 삭제 눌렀을 시 호출
