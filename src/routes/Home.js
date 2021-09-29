@@ -56,6 +56,7 @@ function Home() {
    const [requestList, setRequestList] = useState([]); // 요청리스트
    const [wholeListItem, setWholeListItem] = useState(null); // 전체 리스트 중 하나를 선택할지 여기에 그 데이터가 들어감
    const [wholeList, setWholeList] = useState([]); // 전체 리스트
+   const [isMutation, setIsMutation] = useState(false); // 전체 리스트 등록/수정 모드인지 표시
    const [refresh, setRefresh] = useState(0);
 
    // 가운데 paper 사이즈 적용
@@ -121,6 +122,7 @@ function Home() {
                         list={wholeList}
                         setItem={setWholeListItem}
                         setRefresh={setRefresh}
+                        setIsMutation={setIsMutation}
                      />
                   </Route>
                   <Route path={WHOLELIST_ITEM}>
@@ -129,6 +131,7 @@ function Home() {
                         setItem={setWholeListItem}
                         setLoading={setLoading}
                         setRefresh={setRefresh}
+                        isMutation={isMutation}
                      />
                   </Route>
                </Paper>

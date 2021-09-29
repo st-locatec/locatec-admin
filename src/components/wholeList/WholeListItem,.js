@@ -34,6 +34,7 @@ function WholeListItem({ item, setLoading, setRefresh }) {
    const classes = useStyles(); // 위에서 선언한 스타일
    const history = useHistory(); // 브라우저 history 객체 가져오기
    const [curItem, setCurItem] = useState();
+   const [isMutation, setIsMutation] = useState(false);
    const [isEdit, setIsEdit] = useState(false);
    const [anchorEl, setAnchorEl] = useState();
    const photoAddBtnRef = useRef();
@@ -41,9 +42,12 @@ function WholeListItem({ item, setLoading, setRefresh }) {
    // edit 일 경우 item이 넘어왔으므로, item으로 초기화
    // 아니면 생성이므로, 기본상태로 초기화
    useEffect(() => {
-      if (item) {
-         setCurItem(item);
-         setIsEdit(true);
+      if (item?.item) {
+         setCurItem(item.item);
+         if (item.isMutation) {
+            // item 있고, isMutation이 true면 수정모드
+            setIsEdit(true);
+         }
       } else {
          setCurItem({
             type: SMOKE,
@@ -54,9 +58,9 @@ function WholeListItem({ item, setLoading, setRefresh }) {
             image: "",
          });
       }
+      setIsMutation(item.isMutation);
    }, [item]);
 
-   console.log(curItem);
    // 수정 또는 생성 요청 보내기
    const onPressComplete = async () => {
       setLoading(true);
@@ -142,13 +146,15 @@ function WholeListItem({ item, setLoading, setRefresh }) {
                className={classes.button}>
                뒤로가기
             </Button>
-            <Button
-               variant="contained"
-               color="primary"
-               onClick={onPressComplete}
-               className={classes.button}>
-               완료
-            </Button>
+            {isMutation && (
+               <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={onPressComplete}
+                  className={classes.button}>
+                  완료
+               </Button>
+            )}
          </div>
          <div>
             <Button
@@ -157,22 +163,27 @@ function WholeListItem({ item, setLoading, setRefresh }) {
                className={classes.button}>
                {mapLocTypeToStr(curItem?.type)}
             </Button>
-            <Menu
-               anchorEl={anchorEl}
-               open={Boolean(anchorEl)}
-               onClose={() => setAnchorEl(null)}>
-               {locationTypeArray?.map((item, idx) => {
-                  return (
-                     <MenuItem
-                        key={`menuitem_${idx}`}
-                        onClick={() => onClickLocationType(item)}>
-                        {mapLocTypeToStr(item)}
-                     </MenuItem>
-                  );
-               })}
-            </Menu>
+            {isMutation && (
+               <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={() => setAnchorEl(null)}>
+                  {locationTypeArray?.map((item, idx) => {
+                     return (
+                        <MenuItem
+                           key={`menuitem_${idx}`}
+                           onClick={() => onClickLocationType(item)}>
+                           {mapLocTypeToStr(item)}
+                        </MenuItem>
+                     );
+                  })}
+               </Menu>
+            )}
          </div>
-         <MapWrap coords={curItem?.coords} onClick={onClickMap} />
+         <MapWrap
+            coords={curItem?.coords}
+            onClick={isMutation ? onClickMap : () => {}}
+         />
          <div>
             {curItem?.image && (
                <img
@@ -182,19 +193,24 @@ function WholeListItem({ item, setLoading, setRefresh }) {
                />
             )}
             <br />
-            <Button
-               variant="contained"
-               color="primary"
-               onClick={onClickAddPhoto}>
-               이미지 등록
-            </Button>
-            <input
-               ref={photoAddBtnRef}
-               type="file"
-               accept="image/*"
-               style={{ display: "none" }}
-               onChange={photoChange}
-            />
+
+            {isMutation && (
+               <>
+                  <Button
+                     variant="contained"
+                     color="primary"
+                     onClick={onClickAddPhoto}>
+                     이미지 등록
+                  </Button>
+                  <input
+                     ref={photoAddBtnRef}
+                     type="file"
+                     accept="image/*"
+                     style={{ display: "none" }}
+                     onChange={photoChange}
+                  />
+               </>
+            )}
          </div>
       </>
    );

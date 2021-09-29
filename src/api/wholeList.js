@@ -22,9 +22,7 @@ export const removeWholeListItemApi = async () => {
 // 리스트 아이템 수정
 export const updateWholeListItemApi = async (item) => {
    try {
-      console.log(item);
-      const res = await axios.post(`${ADDRESS}/product/change`, item);
-      console.log(res);
+     await axios.post(`${ADDRESS}/product/change`, item);
    } catch (e) {
       throw e;
    }
