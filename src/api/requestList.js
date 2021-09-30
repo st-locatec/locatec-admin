@@ -4,7 +4,7 @@ import { ADDRESS } from "./address";
 // 전체 요청 리스트 받기
 export const getRequestListApi = async () => {
    try {
-      const res = await axios.get(`${ADDRESS}/admin/NotRegistered`);
+      const res = await axios.get(`${ADDRESS}/admin/find/NotRegistered`);
       return res.data;
    } catch (e) {
       throw e;

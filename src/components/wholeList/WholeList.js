@@ -15,6 +15,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { useHistory } from "react-router";
 import mapLocTypeToStr from "../../utils/mapLocTypeToStr";
 import { WHOLELIST_ITEM } from "../../constants/Link";
+import { removeWholeListItemApi } from "../../api/wholeList";
 
 function WholeList({ list, setLoading, setItem, setRefresh }) {
    const history = useHistory(); // 브라우저 history 객체 가져오기
@@ -39,6 +40,7 @@ function WholeList({ list, setLoading, setItem, setRefresh }) {
       setLoading(true);
       // 한번 더 확인
       if (window.confirm("삭제하시겠습니까?")) {
+         await removeWholeListItemApi(item.id);
          setRefresh((prev) => prev + 1);
       }
       setLoading(false);

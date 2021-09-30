@@ -9,8 +9,10 @@ import { WHOLELIST } from "../../constants/Link";
 import MapWrap from "../elements/MapWrap";
 import { locationTypeArray, SMOKE } from "../../constants/types";
 import mapLocTypeToStr from "../../utils/mapLocTypeToStr";
-import { updateWholeListItemApi } from "../../api/wholeList";
-import { getBase64FromUrl } from "../../utils/getBase64Image";
+import {
+   createWholeListItemApi,
+   updateWholeListItemApi,
+} from "../../api/wholeList";
 
 // 스타일
 const useStyles = makeStyles(() => ({
@@ -58,7 +60,7 @@ function WholeListItem({ item, setLoading, setRefresh }) {
             image: "",
          });
       }
-      setIsMutation(item.isMutation);
+      setIsMutation(item?.isMutation);
    }, [item]);
 
    // 수정 또는 생성 요청 보내기
@@ -66,27 +68,30 @@ function WholeListItem({ item, setLoading, setRefresh }) {
       setLoading(true);
       if (window.confirm(`${isEdit ? "수정" : "생성"}요청을 보내겠습니까?`)) {
          try {
-            if (isEdit) {
-               let obj = {
-                  productId: curItem.id,
-                  latitude: curItem.coords.latitude,
-                  longitude: curItem.coords.longitude,
-                  type: curItem.type,
-                  image: curItem.image,
-               };
-
-               // 사진 변경안됐으면 url 을 base64로 바꾸기
-               if (curItem.image && curItem.image.startsWith("https://")) {
-                  const res = await getBase64FromUrl(curItem.image);
-                  obj.image = res;
+            let obj = {
+               productId: curItem.id,
+               latitude: curItem.coords.latitude,
+               longitude: curItem.coords.longitude,
+               type: curItem.type,
+               image: curItem.image || null,
+            };
+            if (curItem.image) {
+               if (curItem.image.startsWith("https://")) {
+                  // 사진이 https://로 시작하면 변경되지않은거. null로 보낸다.
+                  obj = { ...obj, image: null };
+               } else {
+                  // 사진이 base64 형식일경우, 앞에있는 데이터 타입 식별자 제거
+                  obj = {
+                     ...obj,
+                     image: obj.image.substring(obj.image.indexOf(",") + 1),
+                  };
                }
-               // base64에서 앞에 빼기
-
-               await updateWholeListItemApi({
-                  ...obj,
-                  image: obj.image.substring(obj.image.indexOf(",") + 1),
-               });
+            }
+            //수정일땐 수정 api, 생성일땐 생성 api 호출
+            if (isEdit) {
+               await updateWholeListItemApi(obj);
             } else {
+               await createWholeListItemApi(obj);
             }
             setRefresh((prev) => prev + 1);
             history.push(WHOLELIST);
