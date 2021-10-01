@@ -88,7 +88,9 @@ function WholeList({ list, setLoading, setItem, setRefresh }) {
                            button
                            onClick={() => onClick(item)}>
                            <ListItemText
-                              primary={`위도 : ${item.coords.latitude}, 경도 : ${item.coords.longitude}`}
+                              primary={`${idx + 1}) 위도 : ${
+                                 item.coords.latitude
+                              }, 경도 : ${item.coords.longitude}`}
                               secondary={mapLocTypeToStr(item.type)}
                            />
                            <ListItemSecondaryAction>
